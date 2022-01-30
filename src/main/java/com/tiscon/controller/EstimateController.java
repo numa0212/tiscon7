@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 引越し見積もりのコントローラークラス。
@@ -75,10 +76,11 @@ public class EstimateController {
      * @return 遷移先
      */
     @PostMapping(value = "submit", params = "confirm")
-    String confirm(UserOrderForm userOrderForm, Model model) {
+    String confirm(UserOrderForm userOrderForm, Model model, @RequestParam Integer date) {
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderForm", userOrderForm);
+        model.addAttribute("date", date);
         return "confirm";
     }
 
@@ -119,11 +121,12 @@ public class EstimateController {
      * @return 遷移先
      */
     @PostMapping(value = "result", params = "calculation")
-    String calculation(@Validated UserOrderForm userOrderForm, BindingResult result, Model model) {
+    String calculation(@Validated UserOrderForm userOrderForm, BindingResult result, Model model, @RequestParam("date") Integer date) {
         if (result.hasErrors()) {
 
             model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
             model.addAttribute("userOrderForm", userOrderForm);
+            model.addAttribute("date", date);
             return "confirm";
         }
 
@@ -131,10 +134,16 @@ public class EstimateController {
         UserOrderDto dto = new UserOrderDto();
         BeanUtils.copyProperties(userOrderForm, dto);
         Integer price = estimateService.getPrice(dto);
+        double price2 = estimateService.getPrice2(dto);
+        double price3 = estimateService.getPrice3(dto);
+
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderForm", userOrderForm);
         model.addAttribute("price", price);
+        model.addAttribute("price2", price2);
+        model.addAttribute("price3", price3);
+        model.addAttribute("date", date);
         return "result";
     }
 

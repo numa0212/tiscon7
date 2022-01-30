@@ -96,6 +96,71 @@ public class EstimateService {
     }
 
     /**
+     * 見積もり依頼に応じた概算見積もりを行う。(3,4月)
+     *
+     * @param dto 見積もり依頼情報
+     * @return 概算見積もり結果の料金
+     */
+
+    public double getPrice2(UserOrderDto dto) {
+        double distance = estimateDAO.getDistance(dto.getOldPrefectureId(), dto.getNewPrefectureId());
+        // 小数点以下を切り捨てる
+        int distanceInt = (int) Math.floor(distance);
+
+        // 距離当たりの料金を算出する
+        int priceForDistance = distanceInt * PRICE_PER_DISTANCE;
+
+        int boxes = getBoxForPackage(dto.getBox(), PackageType.BOX)
+                + getBoxForPackage(dto.getBed(), PackageType.BED)
+                + getBoxForPackage(dto.getBicycle(), PackageType.BICYCLE)
+                + getBoxForPackage(dto.getWashingMachine(), PackageType.WASHING_MACHINE);
+
+        // 箱に応じてトラックの種類が変わり、それに応じて料金が変わるためトラック料金を算出する。
+        int pricePerTruck = estimateDAO.getPricePerTruck(boxes);
+
+        // オプションサービスの料金を算出する。
+        int priceForOptionalService = 0;
+
+        if (dto.getWashingMachineInstallation()) {
+            priceForOptionalService = estimateDAO.getPricePerOptionalService(OptionalServiceType.WASHING_MACHINE.getCode());
+        }
+
+        return (priceForDistance + pricePerTruck) * 1.5 + priceForOptionalService;
+    }
+
+    /**
+     * 見積もり依頼に応じた概算見積もりを行う。(9月)
+     *
+     * @param dto 見積もり依頼情報
+     * @return 概算見積もり結果の料金
+     */
+    public double getPrice3(UserOrderDto dto) {
+        double distance = estimateDAO.getDistance(dto.getOldPrefectureId(), dto.getNewPrefectureId());
+        // 小数点以下を切り捨てる
+        int distanceInt = (int) Math.floor(distance);
+
+        // 距離当たりの料金を算出する
+        int priceForDistance = distanceInt * PRICE_PER_DISTANCE;
+
+        int boxes = getBoxForPackage(dto.getBox(), PackageType.BOX)
+                + getBoxForPackage(dto.getBed(), PackageType.BED)
+                + getBoxForPackage(dto.getBicycle(), PackageType.BICYCLE)
+                + getBoxForPackage(dto.getWashingMachine(), PackageType.WASHING_MACHINE);
+
+        // 箱に応じてトラックの種類が変わり、それに応じて料金が変わるためトラック料金を算出する。
+        int pricePerTruck = estimateDAO.getPricePerTruck(boxes);
+
+        // オプションサービスの料金を算出する。
+        int priceForOptionalService = 0;
+
+        if (dto.getWashingMachineInstallation()) {
+            priceForOptionalService = estimateDAO.getPricePerOptionalService(OptionalServiceType.WASHING_MACHINE.getCode());
+        }
+
+        return (priceForDistance + pricePerTruck) * 1.2 + priceForOptionalService;
+    }
+
+    /**
      * 荷物当たりの段ボール数を算出する。
      *
      * @param packageNum 荷物数

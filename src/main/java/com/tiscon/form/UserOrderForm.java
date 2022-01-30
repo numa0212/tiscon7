@@ -54,6 +54,7 @@ public class UserOrderForm {
 
     @NotNull
     private boolean washingMachineInstallation;
+    private String date;
 
     public String getCustomerName() {
         return customerName;
@@ -109,6 +110,14 @@ public class UserOrderForm {
 
     public void setNewAddress(String newAddress) {
         this.newAddress = newAddress;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getBox() {

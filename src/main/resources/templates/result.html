@@ -20,7 +20,16 @@
     <div class="page-title">概算お見積り結果</div>
     <div class="col-sm-12">
       <div class="text-center">
-        <div class="primary-text"><span th:text="${price}"></span>円</div>
+        <th:block th:if = "${date == 3 || date == 4}">
+          <div class="primary-text"><span th:text="${price2}"></span>円</div>
+        </th:block>
+        <th:block th:if = "${date == 9}">
+          <div class="primary-text"><span th:text="${price3}"></span>円</div>
+        </th:block>
+        <th:block th:if = "${date == 1 || date == 2|| date == 5|| date == 6|| date == 7|| date == 8|| date == 10|| date == 11|| date == 12}">
+          <div class="primary-text"><span th:text="${price}"></span>円</div>
+        </th:block>
+
         <button type="submit" name="complete" class="btn btn-primary">詳細見積もり依頼へ</button>
       </div>
       <div class="sub-title">お客様情報</div>
